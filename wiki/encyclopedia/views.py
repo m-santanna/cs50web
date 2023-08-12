@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseBadRequest
 from . import util
 from django import forms
-from django.urls import reverse
 from random import randint
 
 class Search(forms.Form):
@@ -12,7 +11,7 @@ class CreateTitle(forms.Form):
     create_title = forms.CharField(widget=forms.TextInput(attrs={'help_text':'New Wiki Title', 'placeholder': 'Title'}))
 
 class TextArea(forms.Form):
-    text = forms.CharField(widget=forms.Textarea(attrs={"cols":"200", "rows":"50"})) 
+    text = forms.CharField(widget=forms.Textarea(attrs={"cols":"100", "rows":"40"})) 
 
 
 def index(request):
