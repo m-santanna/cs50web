@@ -1,11 +1,19 @@
 from django.shortcuts import render
-from django.http import HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseBadRequest
 from . import util
 from django import forms
 from django.urls import reverse
+from random import randint
 
 class Search(forms.Form):
     searchbar = forms.CharField(widget=forms.TextInput(attrs={'class' : 'search', 'placeholder': 'Search'}))
+
+class CreateTitle(forms.Form):
+    create_title = forms.CharField(widget=forms.TextInput(attrs={'help_text':'New Wiki Title', 'placeholder': 'Title'}))
+
+class TextArea(forms.Form):
+    text = forms.CharField(widget=forms.Textarea(attrs={"cols":"200", "rows":"50"})) 
+
 
 def index(request):
 
@@ -49,3 +57,26 @@ def search(request):
             "strings":strings,
             "searchbar":Search()
         })
+
+def create(request):
+    if request.method == 'POST':
+        formText = TextArea(request.POST)
+        formTitle = CreateTitle(request.POST)
+        if formText.is_valid() and formTitle.is_valid():
+            title = formTitle.cleaned_data["create_title"]
+            text = formText.cleaned_data["text"]
+            for entry in util.list_entries():
+                if title.lower() == entry.lower():
+                    response = HttpResponseBadRequest()
+                    response.write("<div style='text-align:center; font-size:70px; margin-top:20%;'>That page already exists! You should try editing instead.</div>")
+                    return response
+            util.save_entry(title, text)
+            return HttpResponseRedirect(f'/wiki/{title}')
+    return render(request, 'encyclopedia/create.html', {
+        "text":TextArea(),
+        "create_title":CreateTitle()
+    })
+
+def random(request):
+    size = randint(1, len(util.list_entries()) - 1)
+    return wiki(request, util.list_entries()[size])
