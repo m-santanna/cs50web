@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.http import HttpResponseNotFound
 from . import util
 
 
@@ -14,3 +14,4 @@ def wiki(request, wiki):
             "wiki":wiki.capitalize(),
             "content":util.get_entry(wiki)
         })
+    else: return HttpResponseNotFound()
