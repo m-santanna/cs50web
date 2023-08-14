@@ -12,7 +12,7 @@ class CreateTitle(forms.Form):
     create_title = forms.CharField(widget=forms.TextInput(attrs={'help_text':'New Wiki Title', 'placeholder': 'Title'}))
 
 class TextArea(forms.Form):
-    text = forms.CharField(widget=forms.Textarea(attrs={"cols":"100", "rows":"40"})) 
+    text = forms.CharField(widget=forms.Textarea(attrs={'help_text':'New Wiki Title','autofocus':'autofocus', 'placeholder':'Content', "cols":"10", "rows":"5"})) 
 
 
 def index(request):
@@ -91,5 +91,13 @@ def edit(request, wiki):
                 print(wiki, entry, util.get_entry(entry))
                 return render(request, 'encyclopedia/edit.html', {
                     "wikiTitle":entry,
-                    "wikiContent":util.get_entry(entry)
+                    "wikiContent":util.get_entry(entry),
+                    "searchbar":Search(),
+                    "edit":TextArea()
                 })
+    else:
+        form = TextArea(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            util.save_entry(wiki, text)
+        return HttpResponseRedirect(f'wiki/{wiki}')
