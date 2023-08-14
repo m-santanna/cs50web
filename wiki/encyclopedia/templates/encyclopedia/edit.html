@@ -11,7 +11,7 @@ Edit
 <br>
 <h2> {{ wikiContent }}</h2>
 <br>
-<form action="/edit/{{wiki}}" method="post">
+<form action="/edit/{{wikiTitle}}" method="post">
     {% csrf_token %}
     {{ edit }}
     <input type="submit" value="Submit">
