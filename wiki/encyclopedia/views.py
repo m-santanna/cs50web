@@ -3,7 +3,7 @@ from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponse
 from . import util
 from django import forms
 from random import randint
-import markdown2
+from markdown2 import Markdown
 
 class Search(forms.Form):
     searchbar = forms.CharField(widget=forms.TextInput(attrs={'class' : 'search', 'placeholder': 'Search'}))
@@ -23,16 +23,15 @@ def index(request):
     })
 
 def wiki(request, wiki):
-    #markdowner = markdown2.Markdown()
-    #page = util.get_entry(wiki)
-    #page_done = markdowner.convert(page) 
+    markdowner = Markdown()
+    page = util.get_entry(wiki)
     if util.get_entry(wiki):
         for entry in util.list_entries():
             if wiki.lower() == entry.lower():
                 wiki = entry
         return render(request, 'encyclopedia/wiki.html', {
             "wiki":wiki,
-            "content":util.get_entry(wiki),
+            "content":markdowner.convert(page),
             "searchbar":Search()
         })
     else: return HttpResponseNotFound()

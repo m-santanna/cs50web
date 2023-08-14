@@ -14,8 +14,7 @@
 
 {% block body %}
 
-<h1> {{ wiki }}</h1>
 <br>
-<h2> {{ content }}</h2>
+{{ content|safe }}
 
 {% endblock %}
