@@ -81,7 +81,7 @@ def create(request):
 
 def random(request):
     size = randint(1, len(util.list_entries()) - 1)
-    return wiki(request, util.list_entries()[size])
+    return HttpResponseRedirect(f'wiki/{util.list_entries()[size]}')
 
 
 def edit(request, wiki):
