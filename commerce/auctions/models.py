@@ -8,7 +8,9 @@ class User(AbstractUser):
     email = models.EmailField()
 
 class Listing(models.Model):
-    image = models.ImageField(upload_to='listings')
+    title = models.CharField(max_length=64)
+    image = models.ImageField(upload_to='listings', blank=True)
+    description = models.CharField()
     price = models.IntegerField()
 
 class Bid(models.Model):
