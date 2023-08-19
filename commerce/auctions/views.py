@@ -68,9 +68,10 @@ def create_listing(request):
     if request.method == 'POST':
         new_listing.title = request.POST['title'] 
         new_listing.description = request.POST['description']
-        new_listing.owner = request.user.id
+        new_listing.owner = request.user
         new_listing.image = request.POST['image']
-        new_listing.category = request.POST['category']
+        new_listing.price = request.POST['price']
+        new_listing.category = Category.objects.get(title = request.POST['category'])
         new_listing.save()
         return HttpResponseRedirect(reverse('index'))
     return render(request, 'auctions/create.html', {

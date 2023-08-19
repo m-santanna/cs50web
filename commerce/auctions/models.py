@@ -19,6 +19,7 @@ class Listing(models.Model):
     online = models.BooleanField(default=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    price = models.IntegerField(default=0)
     def __str__(self):
         return f'{self.title} owned by {self.owner}'
 
