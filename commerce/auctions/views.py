@@ -3,8 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from models import Listing
-from .models import User
+from .models import User, Listing, Category
 
 
 def index(request):
@@ -65,6 +64,7 @@ def register(request):
 
 def create_listing(request):
     new_listing = Listing()
+    categories = Category.objects.all()
     if request.method == 'POST':
         new_listing.title = request.POST['title'] 
         new_listing.description = request.POST['description']
@@ -73,4 +73,6 @@ def create_listing(request):
         new_listing.category = request.POST['category']
         new_listing.save()
         return HttpResponseRedirect(reverse('index'))
-    return render(request, 'auctions/create.html')
+    return render(request, 'auctions/create.html', {
+        'categories':categories
+    })
