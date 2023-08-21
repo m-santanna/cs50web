@@ -81,7 +81,7 @@ def create_listing(request):
         'categories':categories
     })
 
-@login_required(login_url=reverse('login'))
+@login_required(login_url='login')
 def listings(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     this_bid = Bid.objects.get(user=request.user)
@@ -97,3 +97,13 @@ def listings(request, listing_id):
         'this_bid':this_bid,
         'comments':comments
     })
+
+
+def categories_index(request):
+    return render(request, 'auctions/categories_index.html', {
+        'categories':Category.objects.all()
+    })
+
+
+def categories_page(request):
+    pass
