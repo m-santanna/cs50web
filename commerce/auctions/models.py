@@ -36,3 +36,9 @@ class Comments(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='listing_comments')
     def __str__(self):
         return f'Commented by {self.user} on {self.listing}: {self.text}'
+    
+class Watchlist(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    def __str__(self):
+        return f"{self.listing} is in {self.user}'s watchlist"

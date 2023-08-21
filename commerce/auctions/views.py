@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
 from .models import *
@@ -74,7 +74,7 @@ def create_listing(request):
         new_listing.owner = request.user
         new_listing.image = request.POST['image']
         new_listing.price = request.POST['price']
-        new_listing.category = Category.objects.get(title = request.POST['category'])
+        new_listing.category = categories.get(title = request.POST['category'])
         new_listing.save()
         return HttpResponseRedirect(reverse('index'))
     return render(request, 'auctions/create.html', {
@@ -83,21 +83,35 @@ def create_listing(request):
 
 @login_required(login_url='login')
 def listings(request, listing_id):
-    listing = Listing.objects.get(pk=listing_id)
-    this_bid = Bid.objects.get(user=request.user)
-    comments = Comments.objects.get(listing=listing)
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseNotFound("This listing is not available or doesn't exist.")
+    comments = Comments.objects.filter(listing = listing)
     if request.method == 'POST':
         if request.POST['bid'] <= listing.price:
             return render(request, 'auctions/listing.html', {
                 'message':'You must bid more than the current price!'
             })
-    return render(request, 'auctions/listing.html', {
-        'listing':listing,
-        'user_id':request.user.id,
-        'this_bid':this_bid,
-        'comments':comments
-    })
-
+        else:
+            listing.price = request.POST['bid']
+            bid = Bid()
+            bid.user = request.user
+            bid.current_bid = request.POST['bid']
+            bid.listing = listing
+            bid.save()
+            return HttpResponseRedirect(reverse('listings'))
+    else:
+        if request.user == listing.owner:
+            return render(request, 'auctions/listing_owner.html', {
+                'listing':listing,
+                'user_id':request.user.id,
+                'comments':comments
+            })
+        return render(request, 'auctions/listing_visitor.html', {
+                'listing':listing,
+                'user_id':request.user.id
+            })
 
 def categories_index(request):
     return render(request, 'auctions/categories_index.html', {

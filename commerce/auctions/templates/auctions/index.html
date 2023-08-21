@@ -11,6 +11,7 @@
         {% if listing.online %}
 
             <div class="card" style="width: 100%;">
+                
                 <div class="row no-gutters">
                     <div class="col-md-4">
                         {% if listing.image %}
@@ -23,7 +24,7 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title">{{listing.title}}</h5>
+                            <h5 class="card-title"><a href="{% url 'listings' listing.id %}">{{listing.title}}</a></h5>
                             <p class="card-text"><div>{{listing.description}}</div></p>
                             <p class="card-text"><div class="text-muted">Price: ${{listing.price}}</div></p>
                             <p class="card-text"><div class="text-muted">Category: {{listing.category}}<div></p>

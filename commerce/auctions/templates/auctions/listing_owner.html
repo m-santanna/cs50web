@@ -1,0 +1,72 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+{% if message %}
+<div>{{ message }}</div>
+{% endif %}
+
+{% if listing.online %}
+
+    <div class="card" style="width: 100%;">
+                    
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                {% if listing.image %}
+                <img src="{{listing.image}}" alt="{{listing.title}}'s image" width="99%" height="99%">
+                {% else %}
+                <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+                    No Image Uploaded!
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{listing.title}}</h5>
+                    <p class="card-text"><div>{{listing.description}}</div></p>
+                    <p class="card-text"><div class="text-muted">Category: {{listing.category}}<div></p>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+    <div class="card" style="width: 100%;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <div class="card-body">
+                    <strong class="card-text" style="font-size: larger; position: absolute; top: 25%; left: 50%; transform: translateY(-50%) translateX(-50%);">${{listing.price}}</strong>
+                </div>
+                <form action="{% url 'listings' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-dark" type="submit" name="close" style="position: absolute; top: 60%; left: 50%; transform: translateY(-50%) translateX(-50%);">Close Bid</button>
+                </form>
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-title">Comment Section</p>
+                    <ul>
+                        {% for comment in comments %}
+                            <li class="card-text">{{comment.text}}</li><div class="text-muted">Commented by {{comment.user}}</div>
+                        {% empty %}
+                            <li class="card-text">No comments yet!</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'listings' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" placeholder="Add a comment" name="comment" id="" style="width: 90%; position: absolute; top: 70%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% else %}
+
+  
+
+{% endif %}
+
+{% endblock %}
