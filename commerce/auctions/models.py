@@ -14,7 +14,7 @@ class Category(models.Model):
 
 class Listing(models.Model):
     title = models.CharField(max_length=64)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, max_length=256)
     description = models.CharField(max_length=512)
     online = models.BooleanField(default=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
