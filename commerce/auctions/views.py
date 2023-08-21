@@ -82,6 +82,12 @@ def create_listing(request):
     })
 
 def listings(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    if request.method == 'POST':
+        if request.POST['bid'] <= listing.price:
+            return render(request, 'auctions/listing.html', {
+                'message':'You must bid more than the current price!'
+            })
     return render(request, 'auctions/listing.html', {
-        'listing_id':listing_id
+        'listing':listing
     })

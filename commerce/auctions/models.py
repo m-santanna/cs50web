@@ -14,7 +14,7 @@ class Category(models.Model):
 
 class Listing(models.Model):
     title = models.CharField(max_length=64)
-    image = models.URLField(blank=True, max_length=256)
+    image = models.URLField(blank=True, max_length=512)
     description = models.CharField(max_length=512)
     online = models.BooleanField(default=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -28,7 +28,7 @@ class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_bids')
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='listing_bid')
     def __str__(self):
-        return f'Current bid for {self.listing} is {self.current_bid}'
+        return f'Current bid for {self.listing} is {self.current_bid} by {self.user}'
 
 class Comments(models.Model):
     text = models.CharField(max_length=512)
