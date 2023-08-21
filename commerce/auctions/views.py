@@ -3,8 +3,8 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User, Listing, Category
-
+from .models import *
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     listings = Listing.objects.all()
@@ -81,13 +81,19 @@ def create_listing(request):
         'categories':categories
     })
 
+@login_required(login_url=reverse('login'))
 def listings(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    this_bid = Bid.objects.get(user=request.user)
+    comments = Comments.objects.get(listing=listing)
     if request.method == 'POST':
         if request.POST['bid'] <= listing.price:
             return render(request, 'auctions/listing.html', {
                 'message':'You must bid more than the current price!'
             })
     return render(request, 'auctions/listing.html', {
-        'listing':listing
+        'listing':listing,
+        'user_id':request.user.id,
+        'this_bid':this_bid,
+        'comments':comments
     })
