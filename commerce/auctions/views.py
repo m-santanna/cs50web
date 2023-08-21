@@ -80,3 +80,8 @@ def create_listing(request):
     return render(request, 'auctions/create.html', {
         'categories':categories
     })
+
+def listings(request, listing_id):
+    return render(request, 'auctions/listing.html', {
+        'listing_id':listing_id
+    })
