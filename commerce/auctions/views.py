@@ -105,5 +105,9 @@ def categories_index(request):
     })
 
 
-def categories_page(request):
-    pass
+def categories_page(request, category_title):
+    category = Category.objects.get(title = category_title)
+    listings = Listing.objects.filter(category = category)
+    return render(request, 'auctions/categories_page.html', {
+        'listings':listings
+    })
