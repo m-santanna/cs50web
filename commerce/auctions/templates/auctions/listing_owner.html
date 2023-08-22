@@ -86,7 +86,19 @@
 
 {% else %}
 
-    
+    {% if not listing.winner %}
+        <h2>You closed your listing, but there wasn't any bids...</h2>
+        <h2>Feel free to reopen your listing by clicking on the following button.</h2>
+        <form action="{% url 'reopen' listing.id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-dark" type="submit" name="close" style="  margin: 0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);">Reopen Bid</button>
+        </form>
+    {% else %}
+        <h2 style="text-align: center;">You sold your listing for {{listing.winner.username}}</h2>
+    {% endif %}
   
 
 {% endif %}

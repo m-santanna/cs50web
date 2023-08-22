@@ -149,6 +149,18 @@ def close(request, listing_id):
         return HttpResponseRedirect("/listing/" + str(listing_id))
     return HttpResponseNotFound("This url does not support GET")
 
+def reopen(request, listing_id):
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseNotFound("This listing is not available or doesn't exist.")
+    
+    if request.method == 'POST':
+        listing.online = True
+        listing.save()
+        return HttpResponseRedirect("/listing/" + str(listing_id))
+    return HttpResponseNotFound("This url does not support GET")
+
 def comments(request, listing_id):   
     try:
         listing = Listing.objects.get(pk=listing_id)
