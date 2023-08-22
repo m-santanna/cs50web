@@ -34,13 +34,31 @@
         <div class="row no-gutters">
             <div class="col-md-4">
                 <div class="card-body">
-                    <strong class="card-text" style="font-size: larger; position: absolute; top: 25%; left: 50%; transform: translateY(-50%) translateX(-50%);">${{listing.price}}</strong>
+                    <strong class="card-text" style="font-size: larger; 
+                    position: absolute; top: 25%; left: 50%;
+                     transform: translateY(-50%) translateX(-50%);">
+                     Current price: ${{listing.price}}
+                    </strong>
+                    <br><br>
+                    {% if listing.winner %}
+                    <p style="font-size: larger; position: absolute;
+                    left: 50%; transform: translateX(-50%);">Current winner: {{listing.winner.username}}</p> <br>
+                    {% else %}
+                    <p style="font-size: larger; position: absolute;
+                    left: 50%; transform: translateX(-50%);">No bidders yet.</p> <br>
+                    {% endif %}
+                    <br>
+                    <form action="{% url 'bid' listing.id %}" method="post">
+                        {% csrf_token %}
+                        {{bid_form}}
+                        <br>
+                        <input class="btn btn-dark" style="margin: 0;
+                        position: absolute;
+                        left: 50%;
+                        transform: translateX(-50%);" type="submit" value="Submit">
+                    </form>
                 </div>
-                <form action="{% url 'listings' listing.id %}" method="post">
-                    {% csrf_token %}
-                    {{bid_form}}
-                    <input class="btn btn-dark" type="submit" value="Submit">
-                </form>
+
             </div>
             <div class="col-md-8">
                 <div class="card-body">

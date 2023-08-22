@@ -108,7 +108,7 @@ def create_listing(request):
         new_listing.price = request.POST['price']
         new_listing.category = categories.get(title = request.POST['category'])
         new_listing.save()
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect('/listing/' + str(new_listing.id))
     return render(request, 'auctions/create.html', {
         'categories':categories
     })
@@ -181,7 +181,7 @@ def bid(request, listing_id):
 
     formBid = BidForm(request.POST)
     if formBid.is_valid():
-        data = float(formBid.cleaned_data['bid_price'])
+        data = float(formBid.cleaned_data['current_bid'])
         if data > listing.price:
             bid = Bid(
                 current_bid = data,
@@ -190,8 +190,9 @@ def bid(request, listing_id):
             )
             bid.save()
             listing.price = bid.current_bid
+            listing.winner = bid.user
             listing.save()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect("/listing/" + str(listing_id))
         else:
             return HttpResponseNotFound('Bid must be greater than the current price!')
 

@@ -17,7 +17,8 @@ class Listing(models.Model):
     image = models.URLField(blank=True, max_length=512)
     description = models.CharField(max_length=512)
     online = models.BooleanField(default=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='winner')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.IntegerField(default=0)
     def __str__(self):

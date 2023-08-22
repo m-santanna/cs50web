@@ -38,13 +38,21 @@
         <div class="row no-gutters">
             <div class="col-md-4">
                 <div class="card-body">
-                    <br>
+                    <p class="card-text" style="font-size: larger; position: absolute;
+                    left: 50%; transform: translateX(-50%);">Current price:</p>
+                    <br><br>
                     <strong class="card-text" style="font-size: larger; position: absolute;
                      left: 50%; transform: translateX(-50%);">${{listing.price}}</strong>
                 </div>
                 <br>
                 <div class="card-body">
-                    <p>Current winner: {{listing.winner}}</p>
+                    {% if listing.winner %}
+                    <p style="font-size: larger; position: absolute;
+                    left: 50%; transform: translateX(-50%);">Current winner: {{listing.winner.username}}</p> <br>
+                    {% else %}
+                    <p style="font-size: larger; position: absolute;
+                    left: 50%; transform: translateX(-50%);">No bidders yet.</p> <br>
+                    {% endif %}
                 </div>
                 <form action="{% url 'close' listing.id %}" method="post">
                     {% csrf_token %}
