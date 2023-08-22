@@ -5,6 +5,31 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django import forms
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['text']
+        widget = {
+            'text' : forms.CharField(max_length=512, attrs = {
+            'placeholder':'Add a comment',
+            'name':'add_comment'
+            })  
+        }
+
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bid
+        fields = ["bid_price"]
+        widgets = {
+            "bid_price": forms.NumberInput(attrs={
+                "placeholder": "Bid",
+                "class": "form-control"
+            })
+        }
+
 
 def index(request):
     listings = Listing.objects.all()
@@ -89,28 +114,46 @@ def listings(request, listing_id):
         return HttpResponseNotFound("This listing is not available or doesn't exist.")
     comments = Comments.objects.filter(listing = listing)
     if request.method == 'POST':
-        if request.POST['bid'] <= listing.price:
-            return render(request, 'auctions/listing.html', {
-                'message':'You must bid more than the current price!'
-            })
+        formComment = CommentForm()
+        formBid = BidForm()
+        if formComment.is_valid():
+            data = formComment.cleaned_data['text']
+            comment = Comments(
+                user = request.user,
+                text = data,
+                listing = listing
+            )
+            comment.save()
         else:
-            listing.price = request.POST['bid']
-            bid = Bid()
-            bid.user = request.user
-            bid.current_bid = request.POST['bid']
-            bid.listing = listing
-            bid.save()
-            return HttpResponseRedirect(reverse('listings'))
+            return HttpResponseNotFound('Comment not valid!')
+        
+        if formBid.is_valid():
+            data = float(formComment.cleaned_data['bid_price'])
+            if data > listing.price:
+                bid = Bid(
+                    current_bid = data,
+                    user = request.user,
+                    listing = listing
+                )
+                bid.save()
+                listing.price = bid.current_bid
+                listing.save()
+            else:
+                return HttpResponseNotFound('Bid must be greater than the current price!')
+
+        if request.POST['close']:
+            pass
     else:
         if request.user == listing.owner:
             return render(request, 'auctions/listing_owner.html', {
                 'listing':listing,
-                'user_id':request.user.id,
+                'user':request.user,
                 'comments':comments
             })
         return render(request, 'auctions/listing_visitor.html', {
                 'listing':listing,
-                'user_id':request.user.id
+                'user':request.user,
+                'comments':comments
             })
 
 def categories_index(request):
