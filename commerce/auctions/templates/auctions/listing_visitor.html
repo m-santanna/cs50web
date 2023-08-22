@@ -23,8 +23,11 @@
             <div class="col-md-8">
                 <div class="card-body">
                     <h5 class="card-title">{{listing.title}}</h5>
-                    <p class="card-text"><div>{{listing.description}}</div></p>
-                    <p class="card-text"><div class="text-muted">Category: {{listing.category}}<div></p>
+                    <p class="card-text">
+                        <div>{{listing.description}}</div><br>
+                        <div class="text-muted">Category: {{listing.category}}</div>
+                        <div class="text-muted">Listed by: {{listing.owner.username}}</div>
+                    </p>
                 </div>
             </div>
         </div>
@@ -72,7 +75,9 @@
                     </ul>
                     <form action="{% url 'comments' listing.id %}" method="post">
                         {% csrf_token %}
-                        <input type="text" placeholder="Add a comment" name="add_comment" id="" style="width: 90%;"> 
+                        {{comment_form}}
+                        <p></p>
+                        <input class="btn btn-dark" type="submit" value="Submit" name="Submit">
                     </form>
                 </div>
             </div>
