@@ -118,7 +118,7 @@ def listings(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        return HttpResponseRedirect('/listing-not-found')
+        return HttpResponseRedirect('/listing/doesnt-exist')
     
     comments = Comments.objects.filter(listing = listing)
 
@@ -141,7 +141,7 @@ def close(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        return HttpResponseRedirect('/listing-not-found')
+        return HttpResponseRedirect('/listing/doesnt-exist')
     
     if request.method == 'POST':
         listing.online = False
@@ -153,7 +153,7 @@ def reopen(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        return HttpResponseRedirect('/listing-not-found')
+        return HttpResponseRedirect('listing/doesnt-exist')
     
     if request.method == 'POST':
         listing.online = True
@@ -165,7 +165,7 @@ def comments(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        return HttpResponseRedirect('/listing-not-found')
+        return HttpResponseRedirect('/listing/doesnt-exist')
     
     if request.method == 'POST':
         formComment = CommentForm(request.POST)
@@ -189,7 +189,7 @@ def bid(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        return HttpResponseRedirect('/listing-not-found')
+        return HttpResponseRedirect('/listing/doesnt-exist')
 
     formBid = BidForm(request.POST)
     if formBid.is_valid():
@@ -222,5 +222,5 @@ def categories_page(request, category_title):
         'listings':listings
     })
 
-def listingNotFound(request):
-    return render(request, 'auctions/listingNotFound.html')
+def listingDoesntExist(request):
+    return render(request, 'auctions/listingDoesntExist.html')
