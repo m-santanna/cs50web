@@ -22,9 +22,13 @@
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title">{{listing.title}}</h5>
-                    <p class="card-text"><div>{{listing.description}}</div></p>
-                    <p class="card-text"><div class="text-muted">Category: {{listing.category}}<div></p>
+                    <h5 class="card-title">{{listing.title}}</h5><br>
+                    <p class="card-text">
+                        <div>{{listing.description}}</div><br>
+                        <div class="text-muted">Category: {{listing.category}}</div>
+                        <div class="text-muted">Listed by: {{listing.owner.username}}</div>
+                    </p>
+                
                 </div>
             </div>
         </div>
@@ -34,17 +38,20 @@
         <div class="row no-gutters">
             <div class="col-md-4">
                 <div class="card-body">
+                    <br>
                     <strong class="card-text" style="font-size: larger; position: absolute;
-                     top: 25%; left: 50%; transform: translateY(-50%) translateX(-50%);">${{listing.price}}</strong>
+                     left: 50%; transform: translateX(-50%);">${{listing.price}}</strong>
                 </div>
-                <form action="{% url 'listings' listing.id %}" method="post">
+                <br>
+                <div class="card-body">
+                    <p>Current winner: {{listing.winner}}</p>
+                </div>
+                <form action="{% url 'close' listing.id %}" method="post">
                     {% csrf_token %}
                     <button class="btn btn-dark" type="submit" name="close" style="  margin: 0;
                     position: absolute;
-                    top: 50%;
                     left: 50%;
-                    -ms-transform: translate(-50%, -50%);
-                    transform: translate(-50%, -50%);">Close Bid</button>
+                    transform: translateX(-50%);">Close Bid</button>
                 </form>
             </div>
             <div class="col-md-8">
@@ -57,9 +64,11 @@
                             <li class="card-text">No comments yet!</li>
                         {% endfor %}
                     </ul>
-                    <form action="{% url 'listings' listing.id %}" method="post">
+                    <form action="{% url 'comments' listing.id %}" method="post">
                         {% csrf_token %}
-                        <input type="text" placeholder="Add a comment" name="add_comment" id="" style="width: 90%;">
+                        {{comment_form}}
+                        <p></p>
+                        <input class="btn btn-dark" type="submit" value="Submit" name="Submit">
                     </form>
                 </div>
             </div>

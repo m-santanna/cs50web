@@ -38,7 +38,8 @@
                 </div>
                 <form action="{% url 'listings' listing.id %}" method="post">
                     {% csrf_token %}
-
+                    {{bid_form}}
+                    <input class="btn btn-dark" type="submit" value="Submit">
                 </form>
             </div>
             <div class="col-md-8">
@@ -51,7 +52,7 @@
                             <li class="card-text">No comments yet!</li>
                         {% endfor %}
                     </ul>
-                    <form action="{% url 'listings' listing.id %}" method="post">
+                    <form action="{% url 'comments' listing.id %}" method="post">
                         {% csrf_token %}
                         <input type="text" placeholder="Add a comment" name="add_comment" id="" style="width: 90%;"> 
                     </form>

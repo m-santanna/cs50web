@@ -8,25 +8,32 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comments
-        fields = ['text']
-        widget = {
-            'text' : forms.CharField(max_length=512, attrs = {
-            'placeholder':'Add a comment',
-            'name':'add_comment'
-            })  
-        }
-
 class BidForm(forms.ModelForm):
     class Meta:
         model = Bid
-        fields = ["bid_price"]
+        fields = ["current_bid"]
+        labels = {
+            "current_bid": ("")
+        }
         widgets = {
-            "bid_price": forms.NumberInput(attrs={
+            "current_bid": forms.NumberInput(attrs={
                 "placeholder": "Bid",
                 "class": "form-control"
+            })
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ["text"]
+        labels = {
+            "text": ("")
+        }
+        widgets = {
+            "text": forms.Textarea(attrs={
+                "placeholder": "Add a comment here",
+                "class": "form-control",
+                "rows": 1
             })
         }
 
@@ -112,10 +119,45 @@ def listings(request, listing_id):
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
         return HttpResponseNotFound("This listing is not available or doesn't exist.")
+    
     comments = Comments.objects.filter(listing = listing)
+
+    if request.user == listing.owner:
+        return render(request, 'auctions/listing_owner.html', {
+            'listing':listing,
+            'user':request.user,
+            'comments':comments,
+            'comment_form':CommentForm()
+        })
+    return render(request, 'auctions/listing_visitor.html', {
+            'listing':listing,
+            'user':request.user,
+            'comments':comments,
+            'comment_form':CommentForm(),
+            'bid_form':BidForm()
+        })
+
+def close(request, listing_id):
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseNotFound("This listing is not available or doesn't exist.")
+    
     if request.method == 'POST':
-        formComment = CommentForm()
-        formBid = BidForm()
+        listing.online = False
+        listing.save()
+        return HttpResponseRedirect("/listing/" + str(listing_id))
+    return HttpResponseNotFound("This url does not support GET")
+
+def comments(request, listing_id):   
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseNotFound("This listing is not available or doesn't exist.")
+    
+    if request.method == 'POST':
+        formComment = CommentForm(request.POST)
+        
         if formComment.is_valid():
             data = formComment.cleaned_data['text']
             comment = Comments(
@@ -124,37 +166,35 @@ def listings(request, listing_id):
                 listing = listing
             )
             comment.save()
+            return HttpResponseRedirect("/listing/" + str(listing_id))
         else:
             return HttpResponseNotFound('Comment not valid!')
-        
-        if formBid.is_valid():
-            data = float(formComment.cleaned_data['bid_price'])
-            if data > listing.price:
-                bid = Bid(
-                    current_bid = data,
-                    user = request.user,
-                    listing = listing
-                )
-                bid.save()
-                listing.price = bid.current_bid
-                listing.save()
-            else:
-                return HttpResponseNotFound('Bid must be greater than the current price!')
-
-        if request.POST['close']:
-            pass
     else:
-        if request.user == listing.owner:
-            return render(request, 'auctions/listing_owner.html', {
-                'listing':listing,
-                'user':request.user,
-                'comments':comments
-            })
-        return render(request, 'auctions/listing_visitor.html', {
-                'listing':listing,
-                'user':request.user,
-                'comments':comments
-            })
+        return HttpResponseNotFound('This url does not support GET')
+    
+
+def bid(request, listing_id): 
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseNotFound("This listing is not available or doesn't exist.")
+
+    formBid = BidForm(request.POST)
+    if formBid.is_valid():
+        data = float(formBid.cleaned_data['bid_price'])
+        if data > listing.price:
+            bid = Bid(
+                current_bid = data,
+                user = request.user,
+                listing = listing
+            )
+            bid.save()
+            listing.price = bid.current_bid
+            listing.save()
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return HttpResponseNotFound('Bid must be greater than the current price!')
+
 
 def categories_index(request):
     return render(request, 'auctions/categories_index.html', {
