@@ -44,7 +44,7 @@
                     <strong class="card-text" style="font-size: larger; position: absolute;
                      left: 50%; transform: translateX(-50%);">${{listing.price}}</strong>
                 </div>
-                <br>
+                
                 <div class="card-body">
                     {% if listing.winner %}
                     <p style="font-size: larger; position: absolute;
@@ -91,10 +91,7 @@
         <h2>Feel free to reopen your listing by clicking on the following button.</h2>
         <form action="{% url 'reopen' listing.id %}" method="post">
             {% csrf_token %}
-            <button class="btn btn-dark" type="submit" name="close" style="  margin: 0;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);">Reopen Bid</button>
+            <button class="btn btn-dark" type="submit" name="close">Reopen Bid</button>
         </form>
     {% else %}
         <h2 style="text-align: center;">You sold your listing for {{listing.winner.username}}</h2>

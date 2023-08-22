@@ -87,7 +87,12 @@
 
 {% else %}
 
-  
+    {% if listing.winner.id == user.id %}
+        <h2 style="text-align: center;">You won this auction!</h2>
+ 
+    {% else %}
+        <h2 style="text-align: center;">This listing isn't available anymore!</h2>
+    {% endif %}
 
 {% endif %}
 

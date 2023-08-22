@@ -15,4 +15,5 @@ urlpatterns = [
     path('close/<int:listing_id>', views.close, name='close'),
     path('reopen/<int:listing_id>', views.reopen, name='reopen'),
     path('bid/<int:listing_id>', views.bid, name='bid'),
+    path('listing-not-found', views.listingNotFound, name='listing_not_found')
 ]
