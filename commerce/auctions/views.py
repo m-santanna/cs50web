@@ -222,5 +222,16 @@ def categories_page(request, category_title):
         'listings':listings
     })
 
+
+def watchlist_page(request):
+    list = []
+    watchlist = Watchlist.objects.filter(user = request.user)
+    for listing in watchlist:
+        listings = Listing.objects.get(pk = listing.listing.id)
+        list.append(listings)
+    return render(request, 'auctions/watchlist_page.html', {
+        'listings':list
+    })
+
 def listingDoesntExist(request):
     return render(request, 'auctions/listingDoesntExist.html')
