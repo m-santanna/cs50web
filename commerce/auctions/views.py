@@ -22,6 +22,7 @@ class BidForm(forms.ModelForm):
             })
         }
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comments
@@ -97,6 +98,7 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
+@login_required(login_url='login')
 def create_listing(request):
     new_listing = Listing()
     categories = Category.objects.all()
@@ -113,6 +115,7 @@ def create_listing(request):
         'categories':categories
     })
 
+
 @login_required(login_url='login')
 def listings(request, listing_id):
     try:
@@ -121,7 +124,12 @@ def listings(request, listing_id):
         return HttpResponseRedirect('/listing/doesnt-exist')
     
     comments = Comments.objects.filter(listing = listing)
-
+    watchlist = []
+    list = Watchlist.objects.filter(user = request.user)
+    for l in list:
+        listings = Listing.objects.get(pk = l.listing.id)
+        watchlist.append(listings)
+    print(listing.owner)
     if request.user == listing.owner:
         return render(request, 'auctions/listing_owner.html', {
             'listing':listing,
@@ -134,8 +142,10 @@ def listings(request, listing_id):
             'user':request.user,
             'comments':comments,
             'comment_form':CommentForm(),
-            'bid_form':BidForm()
+            'bid_form':BidForm(),
+            'watchlist':watchlist
         })
+
 
 def close(request, listing_id):
     try:
@@ -149,6 +159,7 @@ def close(request, listing_id):
         return HttpResponseRedirect("/listing/" + str(listing_id))
     return HttpResponseNotFound("This url does not support GET")
 
+
 def reopen(request, listing_id):
     try:
         listing = Listing.objects.get(pk=listing_id)
@@ -160,6 +171,7 @@ def reopen(request, listing_id):
         listing.save()
         return HttpResponseRedirect("/listing/" + str(listing_id))
     return HttpResponseNotFound("This url does not support GET")
+
 
 def comments(request, listing_id):   
     try:
@@ -181,40 +193,69 @@ def comments(request, listing_id):
             return HttpResponseRedirect("/listing/" + str(listing_id))
         else:
             return HttpResponseNotFound('Comment not valid!')
-    else:
-        return HttpResponseNotFound('This url does not support GET')
-    
+    return HttpResponseNotFound('This url does not support GET')
+
 
 def bid(request, listing_id): 
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
         return HttpResponseRedirect('/listing/doesnt-exist')
+    if request.method == 'POST':
+        formBid = BidForm(request.POST)
+        if formBid.is_valid():
+            data = float(formBid.cleaned_data['current_bid'])
+            if data > listing.price:
+                bid = Bid(
+                    current_bid = data,
+                    user = request.user,
+                    listing = listing
+                )
+                bid.save()
+                listing.price = bid.current_bid
+                listing.winner = bid.user
+                listing.save()
+                return HttpResponseRedirect("/listing/" + str(listing_id))
+            else:
+                return HttpResponseNotFound('Bid must be greater than the current price!')
+        return HttpResponseNotFound('Bid not valid!')
+    return HttpResponseNotFound('This url does not support GET')
 
-    formBid = BidForm(request.POST)
-    if formBid.is_valid():
-        data = float(formBid.cleaned_data['current_bid'])
-        if data > listing.price:
-            bid = Bid(
-                current_bid = data,
-                user = request.user,
-                listing = listing
-            )
-            bid.save()
-            listing.price = bid.current_bid
-            listing.winner = bid.user
-            listing.save()
-            return HttpResponseRedirect("/listing/" + str(listing_id))
-        else:
-            return HttpResponseNotFound('Bid must be greater than the current price!')
+
+def add_watchlist(request, listing_id):    
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseRedirect('/listing/doesnt-exist')
+    if request.method == 'POST':
+        watchlist = Watchlist(
+            listing = listing,
+            user = request.user
+        )
+        watchlist.save()
+        return HttpResponseRedirect('/watchlist')
+    return HttpResponseNotFound('This url does not support GET')
 
 
+def remove_watchlist(request, listing_id):    
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        return HttpResponseRedirect('/listing/doesnt-exist')
+    if request.method == 'POST':
+        Watchlist.objects.filter(listing = listing).delete()
+        return HttpResponseRedirect('/watchlist')
+    return HttpResponseNotFound('This url does not support GET')
+
+
+@login_required(login_url='login')
 def categories_index(request):
     return render(request, 'auctions/categories_index.html', {
         'categories':Category.objects.all()
     })
 
 
+@login_required(login_url='login')
 def categories_page(request, category_title):
     category = Category.objects.get(title = category_title)
     listings = Listing.objects.filter(category = category)
@@ -223,6 +264,7 @@ def categories_page(request, category_title):
     })
 
 
+@login_required(login_url='login')
 def watchlist_page(request):
     list = []
     watchlist = Watchlist.objects.filter(user = request.user)
@@ -232,6 +274,7 @@ def watchlist_page(request):
     return render(request, 'auctions/watchlist_page.html', {
         'listings':list
     })
+
 
 def listingDoesntExist(request):
     return render(request, 'auctions/listingDoesntExist.html')

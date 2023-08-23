@@ -27,6 +27,18 @@
                         <div>{{listing.description}}</div><br>
                         <div class="text-muted">Category: {{listing.category}}</div>
                         <div class="text-muted">Listed by: {{listing.owner.username}}</div>
+                        <br>
+                        {% if listing not in watchlist %}
+                            <form action="{% url 'add_watchlist' listing.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Add to watchlist</button>
+                            </form>
+                        {% else %}
+                            <form action="{% url 'remove_watchlist' listing.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Remove from watchlist</button>
+                            </form>
+                        {% endif %}
                     </p>
                 </div>
             </div>

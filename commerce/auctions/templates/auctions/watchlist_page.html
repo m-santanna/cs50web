@@ -20,10 +20,12 @@
                 <div class="col-md-8">
                     <div class="card-body">
                         <h5 class="card-title"><a href="{% url 'listings' listing.id %}">{{listing.title}}</a></h5>
-                        <p class="card-text"><div>{{listing.description}}</div></p>
-                        <p class="card-text"><div class="text-muted">Price: ${{listing.price}}</div></p>
-                        <p class="card-text"><div class="text-muted">Category: {{listing.category}}<div></p>
-                    </div>
+                        <p class="card-text">
+                            <div>{{listing.description}}</div><br>
+                            <div class="text-muted">Price: ${{listing.price}}</div>
+                            <div class="text-muted">Category: {{listing.category}}</div>
+                            <div class="text-muted">Listed by: {{listing.owner.username}}</div>
+                        </p>
                 </div>
             </div>
         </div>  
