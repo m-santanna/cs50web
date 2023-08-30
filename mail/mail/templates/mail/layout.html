@@ -8,6 +8,41 @@
         <link rel="stylesheet" href="{% static 'mail/styles.css' %}">
         {% block script %}
         {% endblock %}
+        <style>
+            body {
+                background-color: grey;
+            }
+            .email_not_read {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                border: 1px solid silver;
+                background-color: white;
+            }
+            .email_sent {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                border: 1px solid silver;
+                background-color: lightgrey;
+            }
+
+            .email_read {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                border: 1px solid silver;
+                background-color: grey;
+            }
+            .timestamp_mailbox {
+                font-weight: 200;
+                font-size: small;
+            }
+
+            .sender_mailbox {
+                font-weight: bold;
+            }
+        </style>
     </head>
     <body>
         <div class="container">

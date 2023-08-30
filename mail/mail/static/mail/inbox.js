@@ -24,6 +24,7 @@ function compose_email() {
 
 }
 
+// function responsible for dealing with submitting emails
 function compose_submit() {
     fetch('/emails', {
       method: 'POST',
@@ -48,4 +49,50 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  
+  // Show each email tab
+  if (mailbox === 'sent') {
+    const view_div = document.querySelector('#emails-view');
+    fetch(`/emails/sent`)
+    .then(response => response.json())
+    .then(emails => {
+      for (let i of Object.keys(emails)) {
+        const email = document.createElement('div');
+        email.id = emails[i].id;
+        email.className = 'email_sent';
+        console.log(emails[i])
+        
+        for (const receiver in emails[i].recipients) {
+          const recipient = document.createElement('div'); recipient.innerHTML = `To: ${emails[i].recipients[receiver]}`; recipient.className = 'recipients_mailbox';
+          const subject = document.createElement('div'); subject.innerHTML = emails[i].subject; subject.className = 'subject_mailbox';
+          const timestamp = document.createElement('div'); timestamp.innerHTML = emails[i].timestamp; timestamp.className = 'timestamp_mailbox';
+          email.append(recipient); email.append(subject); email.append(timestamp);
+          view_div.append(email);
+        }
+
+      }
+    });
+  }
+  else {
+    const view_div = document.querySelector('#emails-view');
+    fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+      for (let i of Object.keys(emails)) {
+        const email = document.createElement('div');
+        email.id = emails[i].id;
+        if (emails[i].read) {
+          email.className = 'email_read';
+        }
+        else {
+          email.className = 'email_not_read';
+        }
+        const sender = document.createElement('div'); sender.innerHTML = emails[i].sender; sender.className = 'sender_mailbox';
+        const subject = document.createElement('div'); subject.innerHTML = emails[i].subject; subject.className = 'subject_mailbox';
+        const timestamp = document.createElement('div'); timestamp.innerHTML = emails[i].timestamp; timestamp.className = 'timestamp_mailbox';
+        email.append(sender); email.append(subject); email.append(timestamp);
+        view_div.append(email);
+      }
+    });
+  }
 }
