@@ -173,7 +173,6 @@ function archive_email(email_id) {
     })
   })
   .then(email => {
-    
     load_mailbox('archive');
   });
 }
@@ -186,7 +185,6 @@ function unarchive_email(email_id) {
     })
   })
   .then(email => {
-    
     load_mailbox('inbox');
   })
 }
@@ -201,8 +199,13 @@ function reply_email(email_id) {
     document.querySelector('#compose-view').style.display = 'block';
   
     document.querySelector('#compose-recipients').value = email.sender;
-    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
-    document.querySelector('#compose-body').value = `On ${email.timestamp}, ${email.sender} wrote: ${email.body}`;
+    if (email.subject.slice(0,3) != "Re:") {
+      document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    }
+    else {
+      document.querySelector('#compose-subject').value = email.subject;
+    }
+    document.querySelector('#compose-body').value = `On ${email.timestamp}, ${email.sender} wrote:\n${email.body}`;
   });
     
 }
