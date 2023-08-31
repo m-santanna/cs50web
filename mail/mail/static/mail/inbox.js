@@ -192,5 +192,17 @@ function unarchive_email(email_id) {
 }
 
 function reply_email(email_id) {
-  console.log('replied');
+  fetch(`/emails/${email_id}`)
+  .then(response => response.json())
+  .then(email => {
+    
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#email-display').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'block';
+  
+    document.querySelector('#compose-recipients').value = email.sender;
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    document.querySelector('#compose-body').value = `On ${email.timestamp}, ${email.sender} wrote: ${email.body}`;
+  });
+    
 }
