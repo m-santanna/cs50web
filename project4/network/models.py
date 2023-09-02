@@ -22,7 +22,7 @@ class Likes(models.Model):
 class Comments(models.Model):
     text = models.CharField(max_length=280)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='posts_comments')
-    user = models.ForeignKey(User, blank=True, related_name='user_comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comments')
     def __str__(self):
         return f'The post: {self.post} was commented by: {self.users} with the following message: {self.text}'
     
