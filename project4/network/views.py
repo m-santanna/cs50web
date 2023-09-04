@@ -4,7 +4,6 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-import json
 from .models import *
 
 
@@ -64,7 +63,7 @@ def register(request):
         return render(request, "network/register.html")
 
 
-@login_required(login_url=reverse('login'))
+@login_required(login_url='login')
 def create_post(request):
     if request.method == 'POST':
         post = Posts(
