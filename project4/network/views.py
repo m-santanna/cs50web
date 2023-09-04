@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User
+from django.contrib.auth.decorators import login_required
+import json
+from .models import *
 
 
 def index(request):
@@ -61,3 +62,18 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+@login_required(login_url=reverse('login'))
+def create_post(request):
+    if request.method == 'POST':
+        post = Posts(
+            owner = request.user,
+            text = request.POST['text']
+        )
+        post.save()
+        return HttpResponseRedirect(reverse('index'))
+    elif request.method == 'GET':
+        return render(request, 'network/create_post.html')
+    else:
+        return HttpResponseForbidden('This route only accepts GETs and POSTs')
