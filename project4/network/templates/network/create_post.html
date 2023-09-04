@@ -3,7 +3,8 @@
 {% block body %}
 
 <form action="{% url 'create' %}" method="post">
-    <textarea name="new_post" id="new_post" cols="30" rows="10" placeholder="What's in your mind?"></textarea>
+    {% csrf_token %}
+    <textarea name="new_post_text" id="new_post_textarea" cols="30" rows="10" placeholder="What's in your mind?"></textarea>
     <input type="submit" value="Submit">
 </form>
 

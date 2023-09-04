@@ -68,7 +68,7 @@ def create_post(request):
     if request.method == 'POST':
         post = Posts(
             owner = request.user,
-            text = request.POST['text']
+            text = request.POST['new_post_text']
         )
         post.save()
         return HttpResponseRedirect(reverse('index'))
