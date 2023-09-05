@@ -28,6 +28,13 @@ class Posts(models.Model):
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following')
     follows = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following_users')
+
     def __str__(self):
         return f'The user: {self.user} follows: {self.follows}'
+    
+    def serialize(self):
+        return {
+            'follower': self.user.username,
+            'follows': self.follows.username
+        }
     

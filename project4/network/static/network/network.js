@@ -15,7 +15,7 @@ function loadPosts(group) {
     fetch(`/posts/${group}`)
     .then(response => response.json())
     .then(posts => {
-        console.log(posts);
+        //console.log(posts);
         
         for (let i of Object.keys(posts)) {
             const post = document.createElement('div');

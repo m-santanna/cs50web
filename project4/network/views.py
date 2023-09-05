@@ -25,7 +25,7 @@ def posts(request, group):
             # Gets all the users that the user follows
             following = Follow.objects.filter(user = request.user)
 
-            # Gets the first user from the following list
+            # Gets the first followed user from the following list
             posts = Posts.objects.filter(owner = following[0].follows)  
 
             # Loops through the following list and joins the posts from followed users
@@ -54,6 +54,28 @@ def create_post(request):
     else:
         return HttpResponseForbidden('This route only accepts POSTs')
 
+
+@login_required(login_url='login')
+def user_profile(request, username):
+    if request.method != 'GET':
+        return HttpResponseForbidden('This route only accepts GETs')
+    
+    # Gets the queryset with the user's info
+    user = User.objects.filter(username = username)[0]
+    # Gets the requested user's posts
+    posts = Posts.objects.filter(owner = user)
+    # Gets the users the requested user follows
+    following = Follow.objects.filter(user = user)
+    # Gets the users that follow the requested user
+    followed = Follow.objects.filter(follows = user)
+
+    # Converts to JSON the posts, the followed users, and the follower
+    posts_serialized = [post.serialize() for post in posts.order_by('-timestamp')]
+    follows_serialized = [follow.serialize() for follow in following]
+    followed_serialized = [follow.serialize() for follow in followed]
+
+    # Returns the corrensponding posts and users in JSON format
+    return JsonResponse([posts_serialized, followed_serialized, follows_serialized], safe=False)
 
 
 def login_view(request):
