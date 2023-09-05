@@ -14,11 +14,19 @@ class Posts(models.Model):
 
     def __str__(self):
         return f'Text: {self.text}, from: {self.owner}'
+    
+    def serialize(self):
+        return {
+            'text': self.text,
+            'owner': self.owner,
+            'timestamp': self.timestamp,
+            'likes': self.likes
+        }
 
     
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following')
-    following = models.ManyToManyField(User, blank=True, related_name='following_users')
+    follows = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following_users')
     def __str__(self):
-        return f'The user: {self.user} follows: {self.following}'
+        return f'The user: {self.user} follows: {self.follows}'
     

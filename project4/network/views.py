@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,16 @@ from .models import *
 
 def index(request):
     return render(request, "network/index.html")
+
+def posts(request, group):
+    if group == 'all_posts':
+        posts = Posts.objects.order_by('-timestamp').all()
+    elif group == 'following':
+        following = Follow.objects.filter(user = request.user)
+        posts = Posts.objects.order_by('-timestamp').all()
+        for follow in following:
+            posts.filter(owner = follow.follows)      
+    return JsonResponse([post.serialize() for post in posts], safe=False)
 
 
 def login_view(request):
