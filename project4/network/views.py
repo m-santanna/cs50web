@@ -33,7 +33,7 @@ def posts(request, group):
                 'error': 'Not following anyone at the moment.'
                 }, status = 400)
         
-        # Returns a json response with all the posts order by the most recent first
+        # Returns a json response with all the posts ordered by the most recent showing up first
     return JsonResponse([post.serialize() for post in posts.order_by('-timestamp')], safe=False)
 
 
