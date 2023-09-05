@@ -18,9 +18,9 @@ class Posts(models.Model):
     def serialize(self):
         return {
             'text': self.text,
-            'owner': self.owner,
-            'timestamp': self.timestamp,
-            'likes': self.likes
+            'owner': self.owner.username,
+            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+            #'likes': [like.username for like in self.likes.all()]
         }
 
     

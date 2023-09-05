@@ -10,15 +10,23 @@ from .models import *
 def index(request):
     return render(request, "network/index.html")
 
+
 def posts(request, group):
     if group == 'all_posts':
         posts = Posts.objects.order_by('-timestamp').all()
+
     elif group == 'following':
-        following = Follow.objects.filter(user = request.user)
-        posts = Posts.objects.order_by('-timestamp').all()
-        for follow in following:
-            posts.filter(owner = follow.follows)      
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+        try:
+            following = Follow.objects.filter(user = request.user)
+            posts = Posts.objects.filter(owner = following[0].follows)  
+            for follow in following[1:]:
+                post = Posts.objects.filter(owner = follow.follows)
+                posts = posts.union(post)
+        except IndexError:
+            return JsonResponse({
+                'error': 'Not following anyone at the moment.'
+                }, status = 400)
+    return JsonResponse([post.serialize() for post in posts.order_by('-timestamp')], safe=False)
 
 
 def login_view(request):
