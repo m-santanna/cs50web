@@ -13,19 +13,27 @@ def index(request):
 
 def posts(request, group):
     if group == 'all_posts':
-        posts = Posts.objects.order_by('-timestamp').all()
+        posts = Posts.objects.all()
 
     elif group == 'following':
         try:
+            # Gets all the users that the user follows
             following = Follow.objects.filter(user = request.user)
+
+            # Gets the first user from the following list
             posts = Posts.objects.filter(owner = following[0].follows)  
+
+            # Loops through the following list and joins the posts from followed users
             for follow in following[1:]:
                 post = Posts.objects.filter(owner = follow.follows)
                 posts = posts.union(post)
+
         except IndexError:
             return JsonResponse({
                 'error': 'Not following anyone at the moment.'
                 }, status = 400)
+        
+        # Returns a json response with all the posts order by the most recent first
     return JsonResponse([post.serialize() for post in posts.order_by('-timestamp')], safe=False)
 
 
