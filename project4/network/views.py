@@ -11,6 +11,11 @@ def index(request):
     return render(request, "network/index.html")
 
 
+@login_required(login_url='login')
+def following(request):
+    return render(request, 'network/following.html')
+
+
 def posts(request, group):
     if group == 'all_posts':
         posts = Posts.objects.all()
@@ -35,6 +40,20 @@ def posts(request, group):
         
     # Returns a json response with all the posts ordered by the most recent showing up first
     return JsonResponse([post.serialize() for post in posts.order_by('-timestamp')], safe=False)
+
+
+@login_required(login_url='login')
+def create_post(request):
+    if request.method == 'POST':
+        post = Posts(
+            owner = request.user,
+            text = request.POST['new_post_text']
+        )
+        post.save()
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseForbidden('This route only accepts POSTs')
+
 
 
 def login_view(request):
@@ -87,18 +106,3 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-
-
-@login_required(login_url='login')
-def create_post(request):
-    if request.method == 'POST':
-        post = Posts(
-            owner = request.user,
-            text = request.POST['new_post_text']
-        )
-        post.save()
-        return HttpResponseRedirect(reverse('index'))
-    elif request.method == 'GET':
-        return render(request, 'network/create_post.html')
-    else:
-        return HttpResponseForbidden('This route only accepts GETs and POSTs')

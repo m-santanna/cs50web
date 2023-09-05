@@ -1,5 +1,16 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+
+    <div id="posts_display"></div>
+    <div id="user_display"></div>
+
+    <div id="create_posts_display">
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
+            <textarea name="new_post_text" id="new_post_textarea" cols="30" rows="10" placeholder="What's in your mind?"></textarea>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
 {% endblock %}
