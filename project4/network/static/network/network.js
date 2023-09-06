@@ -80,7 +80,6 @@ function createPosts() {
 }
 
 
-
 function userProfile(username) {
     
     const user_username = document.querySelector('#user_link_username').innerHTML;
@@ -192,23 +191,37 @@ function follow(username) {
 function unfollow(username) {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     fetch(`/unfollow/${username}`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': csrfToken,
-    },
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+        },
     })
     .then(user => {
-      userProfile(username);
+        userProfile(username);
     })
 }
 
 
 function editPost(postID) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     document.querySelector('#user_display').style.display = 'none';
     document.querySelector('#create_posts_display').style.display = 'none';
     document.querySelector('#edit_posts_display').style.display = 'block';
     document.querySelector('#posts_display').style.display = 'none';
 
     document.querySelector('#edit_post_textarea').value = document.querySelector(`.post${postID}_text`).innerHTML;
-    document.querySelector('#edit_post_id').innerHTML = postID;
+    document.querySelector('#edit_post_submit').addEventListener('click', () => {
+        fetch(`edit/${postID}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({
+                'text': document.querySelector('#edit_post_textarea').value,
+            })
+        })
+        .then(response => {
+            loadPosts('all_posts');
+        })
+    })
 }

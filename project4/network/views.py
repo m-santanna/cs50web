@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import *
-
+import json
 
 def index(request):
     return render(request, "network/index.html")
@@ -70,12 +70,14 @@ def create_post(request):
         return HttpResponseForbidden('This route only accepts POSTs')
 
 
-def edit_post(request):
-    if request.method != 'PUT':
-        return HttpResponseForbidden('This route only accepts PUTs')
-    post = Posts.objects.filter(id = request.PUT['edit_post_id']).update(text = request.PUT['edit_post_text'])
-    post.save()
+def edit_post(request, postID):
+    if request.method != 'POST':
+        return HttpResponseForbidden('This route only accepts POSTs')
+    post = Posts.objects.filter(id = postID)
+    text = json.loads(request.body).get('text')
+    post.update(text = text)
     return HttpResponseRedirect(reverse('index'))
+
 
 @login_required(login_url='login')
 def user_profile(request, username):

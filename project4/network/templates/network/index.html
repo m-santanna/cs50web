@@ -14,12 +14,8 @@
     </div>
 
     <div id="edit_posts_display">
-        <form id="edit_post_form" action="{% url 'edit' %}" method="put">
-            {% csrf_token %}
-            <textarea name="edit_post_text" id="edit_post_textarea" cols="30" rows="10" placeholder="What's in your mind?"></textarea>
-            <input type="submit" value="Save">
-            <div name="edit_post_id" id="edit_post_id" style="display: none;"></div>
-        </form>
+        <textarea name="edit_post_text" id="edit_post_textarea" cols="30" rows="10" placeholder="What's in your mind?"></textarea>
+        <button id="edit_post_submit">Save</button>
     </div>
 
 {% endblock %}
