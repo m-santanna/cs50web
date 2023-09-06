@@ -11,11 +11,6 @@ def index(request):
     return render(request, "network/index.html")
 
 
-@login_required(login_url='login')
-def following(request):
-    return render(request, 'network/following.html')
-
-
 def posts(request, group):
     if group == 'all_posts':
         posts = Posts.objects.all()
@@ -24,7 +19,7 @@ def posts(request, group):
         try:
             # Gets all the users that the user follows
             following = Follow.objects.filter(user = request.user)
-
+            
             # Gets the first followed user from the following list
             posts = Posts.objects.filter(owner = following[0].follows)  
 
@@ -73,9 +68,9 @@ def user_profile(request, username):
     posts_serialized = [post.serialize() for post in posts.order_by('-timestamp')]
     follows_serialized = [follow.serialize() for follow in following]
     followed_serialized = [follow.serialize() for follow in followed]
-
+    own_profile = True if request.user.username == username else False
     # Returns the corrensponding posts and users in JSON format
-    return JsonResponse([posts_serialized, followed_serialized, follows_serialized], safe=False)
+    return JsonResponse([posts_serialized, followed_serialized, follows_serialized, own_profile], safe=False)
 
 
 def login_view(request):

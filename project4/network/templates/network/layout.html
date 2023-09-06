@@ -17,7 +17,9 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="btn btn-sm btn-outline-secondary" id="user_link" href="#"><strong>{{ user.username }}</strong></a>
+                        <button class="btn btn-sm btn-outline-secondary" id="user_link">
+                            <strong id="user_link_username">{{ user.username }}</strong>
+                        </button>
                     </li>
                 {% endif %}
                 <li class="nav-item">
