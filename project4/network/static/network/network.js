@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelector('#create_posts_display').style.display = 'none';
+    document.querySelector('#edit_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'none';
     document.querySelector('#user_display').style.display = 'none';
     
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadPosts(group) {
     
     document.querySelector('#create_posts_display').style.display = 'none';
+    document.querySelector('#edit_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'block';
     document.querySelector('#user_display').style.display = 'none';
     
@@ -49,9 +51,9 @@ function loadPosts(group) {
                 const post = document.createElement('div');
                 post.id = posts[i].id;
                 
-                const owner = document.createElement('button'); owner.innerHTML = posts[i].owner; owner.className = 'post_owner';
-                const text = document.createElement('div'); text.innerHTML = posts[i].text; text.className = 'post_text';
-                const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = 'post_timestamp';
+                const owner = document.createElement('button'); owner.innerHTML = posts[i].owner; owner.className = `post${post.id}_owner`;
+                const text = document.createElement('div'); text.innerHTML = posts[i].text; text.className = `post${post.id}_text`;
+                const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = `post${post.id}_timestamp`;
                 const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'none'; edit_btn.innerHTML = 'Edit';
                 if (owner.innerHTML === user_username) {
                     edit_btn.style.display = 'block';
@@ -71,17 +73,20 @@ function createPosts() {
     
     document.querySelector('#user_display').style.display = 'none';
     document.querySelector('#create_posts_display').style.display = 'block';
+    document.querySelector('#edit_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'none';
     
     document.querySelector('#new_post_textarea').value = '';
 }
 
 
-function userProfile(username) {
 
+function userProfile(username) {
+    
     const user_username = document.querySelector('#user_link_username').innerHTML;
     document.querySelector('#user_display').style.display = 'block';
     document.querySelector('#create_posts_display').style.display = 'none';
+    document.querySelector('#edit_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'none';
     
     document.querySelector('#user_display').innerHTML = '';
@@ -108,10 +113,10 @@ function userProfile(username) {
                 for (let i in posts) {
                     const post = document.createElement('div');
                     post.id = posts[i]['id'];
-                    
-                    const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = 'post_owner';
-                    const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = 'post_text';
-                    const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = 'post_timestamp';
+
+                    const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = `post${post.id}_owner`;
+                    const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = `post${post.id}_text`;
+                    const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post${post.id}_timestamp`;
                     const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'block'; edit_btn.innerHTML = 'Edit';
                     edit_btn.addEventListener('click', () => editPost(post.id));
 
@@ -158,9 +163,9 @@ function userProfile(username) {
                     const post = document.createElement('div');
                     post.id = posts[i]['id'];
                     
-                    const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = 'post_owner';
-                    const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = 'post_text';
-                    const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = 'post_timestamp';
+                    const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = `post${post.id}_owner`;
+                    const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = `post${post.id}_text`;
+                    const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post${post.id}_timestamp`;
                     post.append(owner); post.append(text); post.append(timestamp);
                     document.querySelector('#user_display').append(post);
                 }
@@ -195,4 +200,15 @@ function unfollow(username) {
     .then(user => {
       userProfile(username);
     })
-  }
+}
+
+
+function editPost(postID) {
+    document.querySelector('#user_display').style.display = 'none';
+    document.querySelector('#create_posts_display').style.display = 'none';
+    document.querySelector('#edit_posts_display').style.display = 'block';
+    document.querySelector('#posts_display').style.display = 'none';
+
+    document.querySelector('#edit_post_textarea').value = document.querySelector(`.post${postID}_text`).innerHTML;
+    document.querySelector('#edit_post_id').innerHTML = postID;
+}

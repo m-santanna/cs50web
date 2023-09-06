@@ -70,6 +70,13 @@ def create_post(request):
         return HttpResponseForbidden('This route only accepts POSTs')
 
 
+def edit_post(request):
+    if request.method != 'PUT':
+        return HttpResponseForbidden('This route only accepts PUTs')
+    post = Posts.objects.filter(id = request.PUT['edit_post_id']).update(text = request.PUT['edit_post_text'])
+    post.save()
+    return HttpResponseRedirect(reverse('index'))
+
 @login_required(login_url='login')
 def user_profile(request, username):
     if request.method != 'GET':
