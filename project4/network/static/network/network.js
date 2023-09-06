@@ -10,13 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const user_username = document.querySelector('#user_link_username').innerHTML;
     document.querySelector('#user_link').addEventListener('click', () => userProfile(user_username));
-
+    
     loadPosts('all_posts');
 })
 
 
 function loadPosts(group) {
-
+    
     document.querySelector('#create_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'block';
     document.querySelector('#user_display').style.display = 'none';
@@ -26,7 +26,7 @@ function loadPosts(group) {
     fetch(`/posts/${group}`)
     .then(response => response.json())
     .then(posts => {
-
+        
         // If the user doesn't follow anyone
         if (posts['error']) {
             const message = document.createElement('div');
@@ -34,7 +34,7 @@ function loadPosts(group) {
             document.querySelector('#posts_display').append(message);
         }
         else {
-
+            
             // In case the users followed didn't post anything
             if (posts.length === 0) {
                 const message = document.createElement('div');
@@ -43,6 +43,8 @@ function loadPosts(group) {
             }
             
             // Rendering the posts
+            const user_username = document.querySelector('#user_link_username').innerHTML;
+
             for (let i of Object.keys(posts)) {
                 const post = document.createElement('div');
                 post.id = posts[i].id;
@@ -50,10 +52,14 @@ function loadPosts(group) {
                 const owner = document.createElement('button'); owner.innerHTML = posts[i].owner; owner.className = 'post_owner';
                 const text = document.createElement('div'); text.innerHTML = posts[i].text; text.className = 'post_text';
                 const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = 'post_timestamp';
-
+                const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'none'; edit_btn.innerHTML = 'Edit';
+                if (owner.innerHTML === user_username) {
+                    edit_btn.style.display = 'block';
+                }
+                edit_btn.addEventListener('click', () => editPost(post.id));
                 owner.addEventListener('click', () => userProfile(owner.innerHTML));
 
-                post.append(owner); post.append(text); post.append(timestamp);
+                post.append(owner); post.append(text); post.append(timestamp); post.append(edit_btn);
                 document.querySelector('#posts_display').append(post); 
             }
         }
@@ -106,7 +112,10 @@ function userProfile(username) {
                     const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = 'post_owner';
                     const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = 'post_text';
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = 'post_timestamp';
-                    post.append(owner); post.append(text); post.append(timestamp);
+                    const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'block'; edit_btn.innerHTML = 'Edit';
+                    edit_btn.addEventListener('click', () => editPost(post.id));
+
+                    post.append(owner); post.append(text); post.append(timestamp); post.append(edit_btn);
                     document.querySelector('#user_display').append(post);
                 }
             }    
