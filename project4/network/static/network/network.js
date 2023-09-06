@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-
+    
     document.querySelector('#create_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'none';
     document.querySelector('#user_display').style.display = 'none';
-
+    
     document.querySelector('#following_posts_link').addEventListener('click', () => loadPosts('following'));
     document.querySelector('#all_posts_link').addEventListener('click', () => loadPosts('all_posts'));
     document.querySelector('#create_posts_link').addEventListener('click', createPosts);
-
-    const username = document.querySelector('#user_link_username').innerHTML;
-    document.querySelector('#user_link').addEventListener('click', () => userProfile(username));
+    
+    const user_username = document.querySelector('#user_link_username').innerHTML;
+    document.querySelector('#user_link').addEventListener('click', () => userProfile(user_username));
 
     loadPosts('all_posts');
 })
@@ -70,6 +70,8 @@ function createPosts() {
 
 
 function userProfile(username) {
+
+    const user_username = document.querySelector('#user_link_username').innerHTML;
     document.querySelector('#user_display').style.display = 'block';
     document.querySelector('#create_posts_display').style.display = 'none';
     document.querySelector('#posts_display').style.display = 'none';
@@ -89,12 +91,10 @@ function userProfile(username) {
             document.querySelector('#user_display').append(user_followers); document.querySelector('#user_display').append(user_following);
             
             // If there are no posts from the user yet
-            if (posts.length === 0) {
-                console.log(posts);
+            if (posts.length === 0) {     
                 const message = document.createElement('div');
                 message.innerHTML = "You didn't post anything yet!"; message.className = 'error_message';
-                document.querySelector('#user_display').append(message);
-                
+                document.querySelector('#user_display').append(message);      
             }
             else {
                 for (let i in posts) {
@@ -107,8 +107,7 @@ function userProfile(username) {
                     post.append(owner); post.append(text); post.append(timestamp);
                     document.querySelector('#user_display').append(post);
                 }
-            }
-            
+            }    
         }
         else {
             
@@ -116,6 +115,27 @@ function userProfile(username) {
             const user_following = document.createElement('div'); user_following.innerHTML = `Following: ${following.length}`;
             document.querySelector('#user_display').append(user_followers); document.querySelector('#user_display').append(user_following);
             
+            const follow_unfollow_btn = document.createElement('button'); follow_unfollow_btn.className = 'btn btn-sm btn-outline-secondary';
+            follow_unfollow_btn.id = 'follow_btn';
+            follow_unfollow_btn.innerHTML = 'Follow';
+            
+            for (let i in followers) {
+                if (user_username === followers[i]['follower']) {
+                    follow_unfollow_btn.id = 'unfollow_btn';
+                    follow_unfollow_btn.innerHTML = 'Unfollow';
+                }
+            }
+
+            follow_unfollow_btn.addEventListener('click', () => {
+                if (follow_unfollow_btn.id === 'follow_btn') {
+                    follow(username);
+                }
+                else {
+                    unfollow(username);
+                }
+            })
+            document.querySelector('#user_display').append(follow_unfollow_btn);
+
             // If there are no posts from the user yet
             if (posts.length === 0) {
                 const message = document.createElement('div');
@@ -137,3 +157,21 @@ function userProfile(username) {
         }
     })
 }
+
+function follow(username) {
+    fetch(`/follow/${username}`, {
+      method: 'POST'
+    })
+    .then(user => {
+      userProfile(username);
+    });
+  }
+  
+  function unfollow(username) {
+    fetch(`/unfollow/${username}`, {
+      method: 'POST'
+    })
+    .then(user => {
+      userProfile(username);
+    })
+  }

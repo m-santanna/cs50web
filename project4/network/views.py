@@ -38,6 +38,26 @@ def posts(request, group):
 
 
 @login_required(login_url='login')
+def follow_user(request, username):
+    if request.method != 'POST':
+        return HttpResponseForbidden('This route only accepts POSTs')
+    user = request.user
+    follow = User.objects.get(username = username)
+    a = Follow(user = user, follows = follow)
+    a.save()
+    return JsonResponse({'sucess': 'User followed sucessfully'})
+
+
+@login_required(login_url='login')
+def unfollow_user(request, username):
+    if request.method != 'POST':
+        return HttpResponseForbidden('This route only accepts POSTs')
+    unfollow = Follow.objects.filter(user = request.user).filter(follows = User.objects.get(username = username))
+    unfollow.delete()
+    return JsonResponse({'sucess': 'User unfollowed sucessfully'})
+    
+
+@login_required(login_url='login')
 def create_post(request):
     if request.method == 'POST':
         post = Posts(
