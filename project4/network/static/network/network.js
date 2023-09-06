@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPosts('all_posts');
 })
 
+
 function loadPosts(group) {
 
     document.querySelector('#create_posts_display').style.display = 'none';
@@ -58,6 +59,7 @@ function loadPosts(group) {
         }
     })
 }
+
 
 function createPosts() {
     
@@ -158,18 +160,28 @@ function userProfile(username) {
     })
 }
 
+
 function follow(username) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     fetch(`/follow/${username}`, {
-      method: 'POST'
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+        },
     })
     .then(user => {
-      userProfile(username);
+        userProfile(username);
     });
-  }
-  
-  function unfollow(username) {
+}
+
+
+function unfollow(username) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     fetch(`/unfollow/${username}`, {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrfToken,
+    },
     })
     .then(user => {
       userProfile(username);
