@@ -54,14 +54,35 @@ function loadPosts(group) {
                 const owner = document.createElement('button'); owner.innerHTML = posts[i].owner; owner.className = `post${post.id}_owner`;
                 const text = document.createElement('div'); text.innerHTML = posts[i].text; text.className = `post${post.id}_text`;
                 const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = `post${post.id}_timestamp`;
+                
+                const like_count = document.createElement('div'); like_count.innerHTML = posts[i]['likes'].length; like_count.className = `post${post.id}_like_count`;
+                const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.innerHTML = 'Like'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary';
+                
+                for (let j in posts[i]['likes']) {
+                    if (user_username === posts[i]['likes'][j]) {
+                        like_unlike_btn.id = 'unlike_btn';
+                        like_unlike_btn.innerHTML = 'Unlike';
+                    }
+                }
+                
+                like_unlike_btn.addEventListener('click', () => {
+                    if (like_unlike_btn.id === 'like_btn') {
+                        likePost(post.id);
+                    }
+                    else {
+                        unlikePost(post.id);
+                    }
+                })
+
                 const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'none'; edit_btn.innerHTML = 'Edit';
+                
                 if (owner.innerHTML === user_username) {
                     edit_btn.style.display = 'block';
                 }
                 edit_btn.addEventListener('click', () => editPost(post.id));
                 owner.addEventListener('click', () => userProfile(owner.innerHTML));
 
-                post.append(owner); post.append(text); post.append(timestamp); post.append(edit_btn);
+                post.append(owner); post.append(text); post.append(timestamp); post.append(like_count); post.append(like_unlike_btn); post.append(edit_btn);
                 document.querySelector('#posts_display').append(post); 
             }
         }
@@ -98,8 +119,8 @@ function userProfile(username) {
         // If going to own profile
         if (own_profile) {
             
-            const user_followers = document.createElement('div'); user_followers.innerHTML = `Followers: ${followers.length}`;
-            const user_following = document.createElement('div'); user_following.innerHTML = `Following: ${following.length}`;
+            const user_followers = document.createElement('div'); user_followers.innerHTML = `Followers: ${follow.length}`;
+            const user_following = document.createElement('div'); user_following.innerHTML = `Following: ${follow.length}`;
             document.querySelector('#user_display').append(user_followers); document.querySelector('#user_display').append(user_following);
             
             // If there are no posts from the user yet
@@ -117,9 +138,27 @@ function userProfile(username) {
                     const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = `post${post.id}_text`;
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post${post.id}_timestamp`;
                     const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'block'; edit_btn.innerHTML = 'Edit';
+                    const like_count = document.createElement('div'); like_count.innerHTML = posts[i]['likes'].length; like_count.className = `post${post.id}_like_count`;
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary'; like_unlike_btn.innerHTML = 'Like';
+                    
+                    for (let j in posts[i]['likes']) {
+                        if (user_username === posts[i]['likes'][j]) {
+                            like_unlike_btn.id = 'unlike_btn';
+                            like_unlike_btn.innerHTML = 'Unlike';
+                        }
+                    }
+
+                    like_unlike_btn.addEventListener('click', () => {
+                        if (like_unlike_btn.id === 'like_btn') {
+                            likePost(post.id);
+                        }
+                        else {
+                            unlikePost(post.id);
+                        }
+                    })
                     edit_btn.addEventListener('click', () => editPost(post.id));
 
-                    post.append(owner); post.append(text); post.append(timestamp); post.append(edit_btn);
+                    post.append(owner); post.append(text); post.append(timestamp); post.append(like_count); post.append(like_unlike_btn); post.append(edit_btn);
                     document.querySelector('#user_display').append(post);
                 }
             }    
@@ -165,7 +204,26 @@ function userProfile(username) {
                     const owner = document.createElement('div'); owner.innerHTML = posts[i]['owner']; owner.className = `post${post.id}_owner`;
                     const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = `post${post.id}_text`;
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post${post.id}_timestamp`;
-                    post.append(owner); post.append(text); post.append(timestamp);
+                    const like_count = document.createElement('div'); like_count.innerHTML = posts[i]['likes'].length; like_count.className = `post${post.id}_like_count`;
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary'; like_unlike_btn.innerHTML = 'Like';
+                    
+                    for (let j in posts[i]['likes']) {
+                        if (user_username === posts[i]['likes'][j]) {
+                            like_unlike_btn.id = 'unlike_btn';
+                            like_unlike_btn.innerHTML = 'Unlike';
+                        }
+                    }
+                    
+                    like_unlike_btn.addEventListener('click', () => {
+                        if (like_unlike_btn.id === 'like_btn') {
+                            likePost(post.id);
+                        }
+                        else {
+                            unlikePost(post.id);
+                        }
+                    })
+                    
+                    post.append(owner); post.append(text); post.append(timestamp); post.append(like_count); post.append(like_unlike_btn);
                     document.querySelector('#user_display').append(post);
                 }
             }
@@ -224,4 +282,28 @@ function editPost(postID) {
             loadPosts('all_posts');
         })
     })
+}
+
+
+function likePost(postID) {
+    console.log('liked');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch(`/like/${postID}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+        },
+    });
+}
+
+
+function unlikePost(postID) {
+    console.log('unliked');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch(`/unlike/${postID}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+        },
+    });
 }

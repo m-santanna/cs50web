@@ -55,7 +55,23 @@ def unfollow_user(request, username):
     unfollow = Follow.objects.filter(user = request.user).filter(follows = User.objects.get(username = username))
     unfollow.delete()
     return JsonResponse({'sucess': 'User unfollowed sucessfully'})
-    
+
+
+def like(request, postID):
+    if request.method != 'POST':
+        return HttpResponseForbidden('This route only accepts POSTs')
+    post = Posts.objects.get(pk = postID)
+    post.likes.add(request.user)
+    return JsonResponse({'sucess': 'Post liked sucessfully'})
+
+
+def unlike(request, postID):
+    if request.method != 'POST':
+        return HttpResponseForbidden('This route only accepts POSTs')
+    post = Posts.objects.get(pk = postID)
+    post.likes.remove(request.user)
+    return JsonResponse({'sucess': 'Post unliked sucessfully'})
+
 
 @login_required(login_url='login')
 def create_post(request):
@@ -70,6 +86,7 @@ def create_post(request):
         return HttpResponseForbidden('This route only accepts POSTs')
 
 
+@login_required(login_url='login')
 def edit_post(request, postID):
     if request.method != 'POST':
         return HttpResponseForbidden('This route only accepts POSTs')

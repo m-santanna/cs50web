@@ -21,7 +21,7 @@ class Posts(models.Model):
             'text': self.text,
             'owner': self.owner.username,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-            #'likes': [like.username for like in self.likes.all()]
+            'likes': [like.username for like in self.likes.all()]
         }
 
     
