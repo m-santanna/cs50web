@@ -7,6 +7,58 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
         <script src="{% static 'network/network.js' %}"></script>
+        
+        <style>
+            .body {
+                margin: 3px;
+                padding: 3px;
+            }
+            .post_owner_div {
+                font-weight: 700;
+            }
+            .post_like_count {
+                font-weight: 200;
+                font-size: medium;
+            }
+            .post_timestamp {
+                font-weight: 100;
+                font-size: small;
+            }
+            .post_owner, .edit_post_btn {
+            background-color: #FFFFFF;
+            border: 0;
+            border-radius: .5rem;
+            box-sizing: border-box;
+            color: #111827;
+            font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 1.25rem;
+            padding: .75rem 1rem;
+            text-align: center;
+            text-decoration: none #D1D5DB solid;
+            text-decoration-thickness: auto;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            }
+
+            .post_owner, .edit_post_btn:hover {
+            background-color: rgb(249,250,251);
+            }
+
+            .post_owner, .edit_post_btn:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            }
+
+            .post_owner, .edit_post_btn:focus-visible {
+            box-shadow: none;
+            }
+        </style>
+
     </head>
     <body>
 
