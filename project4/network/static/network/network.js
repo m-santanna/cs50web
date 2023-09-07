@@ -58,7 +58,7 @@ function loadPosts(group) {
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = `post_timestamp`;
                     
                     const like_count = document.createElement('div'); like_count.innerHTML = `Likes: ${posts[i]['likes'].length}`; like_count.className = `post_like_count`;
-                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.innerHTML = 'Like'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary';
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.innerHTML = 'Like'; like_unlike_btn.className = 'button-55';
                     
                     for (let j in posts[i]['likes']) {
                         if (user_username === posts[i]['likes'][j]) {
@@ -124,7 +124,7 @@ function loadPosts(group) {
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i].timestamp; timestamp.className = `post_timestamp`;
                     
                     const like_count = document.createElement('div'); like_count.innerHTML = `Likes: ${posts[i]['likes'].length}`; like_count.className = `post_like_count`;
-                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.innerHTML = 'Like'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary';
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.innerHTML = 'Like'; like_unlike_btn.className = 'button-55';
                     
                     for (let j in posts[i]['likes']) {
                         if (user_username === posts[i]['likes'][j]) {
@@ -200,7 +200,7 @@ function userProfile(username) {
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post_timestamp`;
                     const edit_btn = document.createElement('button'); edit_btn.className = 'edit_post_btn'; edit_btn.style.display = 'block'; edit_btn.innerHTML = 'Edit';
                     const like_count = document.createElement('div'); like_count.innerHTML = `Likes: ${posts[i]['likes'].length}`; like_count.className = `post_like_count`;
-                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary'; like_unlike_btn.innerHTML = 'Like';
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'button-55'; like_unlike_btn.innerHTML = 'Like';
                     
                     for (let j in posts[i]['likes']) {
                         if (user_username === posts[i]['likes'][j]) {
@@ -232,7 +232,7 @@ function userProfile(username) {
             
             document.querySelector('#user_display').append(user_followers); document.querySelector('#user_display').append(user_following); 
             
-            const follow_unfollow_btn = document.createElement('button'); follow_unfollow_btn.className = 'btn btn-sm btn-outline-secondary';
+            const follow_unfollow_btn = document.createElement('button'); follow_unfollow_btn.className = 'button-55';
             follow_unfollow_btn.id = 'follow_btn';
             follow_unfollow_btn.innerHTML = 'Follow';
             
@@ -271,7 +271,7 @@ function userProfile(username) {
                     const text = document.createElement('div'); text.innerHTML = posts[i]['text']; text.className = `post_text`;
                     const timestamp = document.createElement('div'); timestamp.innerHTML = posts[i]['timestamp']; timestamp.className = `post_timestamp`;
                     const like_count = document.createElement('div'); like_count.innerHTML = `Likes: ${posts[i]['likes'].length}`; like_count.className = `post_like_count`;
-                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'btn btn-sm btn-outline-secondary'; like_unlike_btn.innerHTML = 'Like';
+                    const like_unlike_btn = document.createElement('button'); like_unlike_btn.id = 'like_btn'; like_unlike_btn.className = 'button-55'; like_unlike_btn.innerHTML = 'Like';
                     const line_br = document.createElement('hr');
 
                     for (let j in posts[i]['likes']) {
