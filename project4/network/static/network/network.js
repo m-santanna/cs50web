@@ -173,13 +173,13 @@ function userProfile(username) {
     fetch(`/users/${username}`)
     .then(response => response.json())
     .then(data => {
-        posts = data[0]; followers = data[1]; following = data[2]; own_profile = data[3];
+        const posts = data[0]; const followers = data[1]; const following = data[2]; const own_profile = data[3];
         
-        // If going to own profile
+        // If going to own profile 
         if (own_profile) {
             
-            const user_followers = document.createElement('div'); user_followers.innerHTML = `Followers: ${follow.length}`;
-            const user_following = document.createElement('div'); user_following.innerHTML = `Following: ${follow.length}`;
+            const user_followers = document.createElement('div'); user_followers.innerHTML = `Followers: ${followers.length}`;
+            const user_following = document.createElement('div'); user_following.innerHTML = `Following: ${following.length}`;
             const line_br_follow_info = document.createElement('hr');
 
             document.querySelector('#user_display').append(user_followers); document.querySelector('#user_display').append(user_following); document.querySelector('#user_display').append(line_br_follow_info); 
