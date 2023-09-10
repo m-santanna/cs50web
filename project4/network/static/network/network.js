@@ -299,6 +299,11 @@ function userProfile(username) {
 }
 
 
+function pagination() {
+    console.log('paginationStillNeeded')
+}
+
+
 function createPosts() {
     
     document.querySelector('#user_display').style.display = 'none';
