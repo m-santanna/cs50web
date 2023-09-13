@@ -344,7 +344,7 @@ function editPost(postID) {
     document.querySelector('#edit_posts_display').style.display = 'block';
     document.querySelector('#posts_display').style.display = 'none';
 
-    document.querySelector('#edit_post_textarea').value = document.querySelector(`.post${postID}_text`).innerHTML;
+    document.querySelector('#edit_post_textarea').value = document.getElementById(postID).querySelector(`.post_text`).innerHTML;
     document.querySelector('#edit_post_submit').addEventListener('click', () => {
         fetch(`edit/${postID}`, {
             method: 'POST',
